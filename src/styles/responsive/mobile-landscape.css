@@ -1,0 +1,122 @@
+/* ==========================================================================
+   RESPONSIVE — MOBILE LANDSCAPE  (letterbox to 16:9)
+
+   Phones in landscape are typically ~19.5:9 or wider, so every section — all
+   designed at 16:9 or at their video's aspect ratio — would overflow the
+   viewport height.
+
+   Fix: keep `.scroll-container` full-bleed so swipes anywhere (including the
+   black bars) still scroll, but cap each section's width to
+   `viewport-height × 16/9` and centre it. Black bars land on the left/right.
+   ========================================================================== */
+
+@media screen and (max-width: 1024px) and (orientation: landscape) and (pointer: coarse) {
+    html,
+    body {
+        background: #000 !important;
+    }
+
+    .scroll-container {
+        width: 100vw !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        background: #000 !important;
+    }
+
+    /* Letterbox every direct child section. */
+    .scroll-container > .hero-sunset,
+    .scroll-container > .arcade-hall,
+    .scroll-container > .fire-meme-stage,
+    .scroll-container > .snack-table,
+    .scroll-container > .tub-scene,
+    .scroll-container > .phone-menu,
+    .scroll-container > .disclaimer-panel {
+        width: min(100vw, calc(100dvh * 16 / 9)) !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    /* Fixed chrome stays full-width so it spans the black bars too. */
+    .marquee-bar,
+    .site-header {
+        width: 100vw !important;
+        left: 0 !important;
+    }
+
+    /* ---------- Corner controls ----------
+       Tightened so they fit the short landscape viewport. Both buttons keep
+       identical dimensions so they stay visually matched. */
+    .chrome-button {
+        top: 6px !important;
+        width: 34px !important;
+        height: 34px !important;
+        border-width: 3px !important;
+        border-radius: 8px !important;
+    }
+
+    .menu-button {
+        right: 8px !important;
+        padding: 6px !important;
+    }
+
+    .menu-button-line {
+        width: 20px !important;
+        height: 3px !important;
+    }
+
+    .bgm-toggle {
+        right: 50px !important;
+        font-size: 14px !important;
+    }
+
+    /* ---------- Arcade menu ---------- */
+    .arcade-menu-overlay {
+        padding: 72px 8px 8px !important; /* clear marquee + header */
+        align-items: flex-start !important;
+    }
+
+    .arcade-menu-box {
+        padding: 12px 16px 10px !important;
+        min-width: 0 !important;
+        width: min(380px, 94vw) !important;
+        max-height: calc(100dvh - 80px) !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .arcade-menu-title    { font-size: 9px !important; margin-bottom: 2px !important; }
+    .arcade-menu-subtitle { font-size: 5px !important; margin-bottom: 8px !important; }
+    .arcade-menu-items    { gap: 5px !important; }
+    .arcade-menu-item     { padding: 3px 6px !important; gap: 10px !important; }
+    .arcade-menu-cursor   { font-size: 8px !important; width: 12px !important; }
+    .arcade-menu-icon     { font-size: 10px !important; width: 18px !important; }
+    .arcade-menu-label    { font-size: 7px !important; }
+    .arcade-menu-hint     { margin-top: 8px !important; line-height: 1.5 !important; font-size: 5px !important; }
+
+    /* ---------- Terminal popup ---------- */
+    .terminal-popup-overlay {
+        padding: 72px 8px 8px !important;
+        align-items: flex-start !important;
+    }
+
+    .terminal-popup {
+        padding: 16px 20px 14px !important;
+        min-width: 0 !important;
+        width: min(500px, 94vw) !important;
+        max-width: 94vw !important;
+        max-height: calc(100dvh - 80px) !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .terminal-popup-lines  { gap: 8px !important; }
+    .terminal-line         { font-size: 9px !important; letter-spacing: 0.12em !important; }
+    .terminal-line--gold   { font-size: 12px !important; }
+    .terminal-popup-close  { font-size: 16px !important; top: 6px !important; right: 10px !important; }
+    .terminal-load-block   { width: 10px !important; height: 10px !important; }
+
+    /* We're in landscape — the rotate gate must stay down. */
+    .rotate-device-overlay {
+        display: none !important;
+    }
+}

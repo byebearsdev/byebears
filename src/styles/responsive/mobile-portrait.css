@@ -1,0 +1,29 @@
+/* ==========================================================================
+   RESPONSIVE — MOBILE PORTRAIT
+   The whole experience is built around a 16:9 stage, so portrait phones get a
+   "rotate your device" gate instead of a squashed layout.
+   ========================================================================== */
+
+@media screen and (max-width: 900px) and (orientation: portrait) {
+    .rotate-device-overlay {
+        display: flex;
+    }
+
+    /* Hide everything behind the gate so nothing bleeds through. */
+    body > *:not(.rotate-device-overlay) {
+        visibility: hidden !important;
+    }
+
+    /* Stop background media while the gate is up — saves battery and data. */
+    body > *:not(.rotate-device-overlay) video,
+    body > *:not(.rotate-device-overlay) audio {
+        display: none !important;
+    }
+
+    html,
+    body {
+        overflow: hidden !important;
+        height: 100dvh !important;
+        touch-action: none;
+    }
+}

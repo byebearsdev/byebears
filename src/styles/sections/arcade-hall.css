@@ -1,0 +1,128 @@
+/* ==========================================================================
+   SECTION — ARCADE HALL
+   Chad and the buried-bear sandcastle, composited over looping beach footage.
+
+   Layout note: the <video> is in normal flow and therefore *defines* the
+   section's height; everything else is absolutely positioned on top of it. That
+   is what keeps the overlay art locked to the footage at any viewport width.
+   ========================================================================== */
+
+.arcade-hall {
+    position: relative;
+    width: 100%;
+    /* sandcastle_bg.mp4 is natively 1280px wide — capping here (same as
+       .snack-table) keeps it from being upscaled and going soft on wider
+       screens. The overlay/stage/Chad all size off this same box (cqh or
+       inset:0), so they scale down together and stay lined up. */
+    max-width: 1280px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+/* ---------- Video, in flow: sets the section height ---------- */
+.arcade-hall-video {
+    position: relative;
+    width: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.arcade-hall-video video {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ---------- Everything else, stacked over the video ---------- */
+.arcade-hall-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Darkening wash so the artwork reads against bright frames. */
+.arcade-hall-tint {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 10, 26, 0.4);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/*
+ * Size container for the scene. The cabinets and Chad are sized in `cqh` so
+ * they scale with the section rather than the viewport.
+ */
+.arcade-hall-stage {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    container-type: size;
+    container-name: game;
+}
+
+.arcade-scene {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+}
+
+/* ---------- Floating pixel motes ---------- */
+.pixel-field {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.pixel-mote {
+    position: absolute;
+    width: 0.25cqw;
+    height: 0.4cqh;
+    background: rgba(255, 255, 255, 0.3);
+    animation: pixelFloat 8s infinite ease-in-out;
+}
+
+@keyframes pixelFloat {
+    0%, 100% { transform: translateY(0) scale(1);      opacity: 0.3; }
+    50%      { transform: translateY(-20px) scale(1.2); opacity: 0.8; }
+}
+
+/* ---------- Chad ---------- */
+/*
+ * `pointer-events: none` — Chad has no click behaviour of his own, so this
+ * lets clicks pass through him to whatever's underneath. That matters here:
+ * he sits in front of the sandcastle (higher z-index, matching the artwork,
+ * where he's kneeling right at it) and now overlaps its clickable area, so
+ * without this he'd silently swallow clicks meant for the sandcastle.
+ */
+.arcade-chad {
+    position: absolute;
+    bottom: -2%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+    pointer-events: none;
+}
+
+.arcade-chad img {
+    height: 70cqh;
+    width: auto;
+    object-fit: contain;
+    display: block;
+    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.3));
+    animation: chadFloat 3s ease-in-out infinite;
+}
+
+@keyframes chadFloat {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-10px); }
+}

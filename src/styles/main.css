@@ -1,0 +1,52 @@
+/* ==========================================================================
+   $BYEBEARS — STYLESHEET ENTRY POINT
+
+   Import order is the cascade order, so it matters:
+     1. base        — tokens, reset, shared animations, scrollbar
+     2. components  — reusable pieces, no page-specific positioning
+     3. layout      — persistent page furniture
+     4. sections    — the scrolling page sections, top to bottom
+     5. overlays    — anything that covers the page
+     6. responsive  — device overrides, last so they win
+   ========================================================================== */
+
+/* ---------- 1. Base ---------- */
+@import './base/tokens.css';
+@import './base/reset.css';
+@import './base/animations.css';
+@import './base/scrollbar.css';
+
+/* ---------- 2. Components ---------- */
+@import './components/character-video.css';
+@import './components/modal-close-button.css';
+@import './components/neon-text.css';
+@import './components/sandcastle-bear.css';
+
+/* ---------- 3. Layout ---------- */
+@import './layout/page-chrome.css';
+@import './layout/marquee-bar.css';
+@import './layout/site-header.css';
+@import './layout/chrome-buttons.css';
+@import './layout/scroll-indicator.css';
+
+/* ---------- 4. Sections (in scroll order) ---------- */
+@import './sections/hero-sunset.css';
+@import './sections/arcade-hall.css';
+@import './sections/fire-meme-stage.css';
+@import './sections/snack-table.css';
+@import './sections/tub-scene.css';
+@import './sections/phone-menu.css';
+@import './sections/disclaimer-panel.css';
+
+/* ---------- 5. Overlays ---------- */
+@import './overlays/rotate-device-gate.css';
+@import './overlays/lair-gate.css';
+@import './overlays/arcade-menu.css';
+@import './overlays/terminal-popup.css';
+@import './overlays/video-modal.css';
+@import './overlays/game-modal.css';
+@import './overlays/desktop-only-notice.css';
+
+/* ---------- 6. Responsive ---------- */
+@import './responsive/mobile-portrait.css';
+@import './responsive/mobile-landscape.css';

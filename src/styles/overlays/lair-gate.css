@@ -1,0 +1,438 @@
+/* ==========================================================================
+   OVERLAY — LAIR GATE
+   Wojak's frozen lair, the very first thing a visitor sees, played as a
+   looping background video (section01.mp4) inside .lair-frame — an
+   aspect-ratio box locked to the video's own 16:9 frame (see below), so
+   everything positioned inside it by percentage — the BYE BEARS button,
+   the pointer text, the choice panel — tracks the same point in the video
+   at every viewport size.
+
+   Clicking the button hands off to a one-shot melt clip, then a choice of
+   three death clips, then a full-screen green wipe (see .bull-wipe) that
+   covers the handoff to the real page and uncovers it again on the other
+   side.
+   ========================================================================== */
+
+.lair-gate {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    background: #050f16;
+    z-index: var(--z-lair-gate);
+    overflow: hidden;
+    /* Stays invisible until every intro asset (video first frame, both
+       button images) is actually ready — see initLairGate's readiness gate
+       in LairGate.js — so the scene appears all at once instead of the
+       button popping in ahead of everything else. */
+    opacity: 0;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.lair-gate.is-ready {
+    opacity: 1;
+}
+
+.lair-gate.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* ---------- Frame ---------- */
+/* Locked to section01.mp4's own 16:9 frame and capped at its native 1280px
+   width — same treatment as every scrolling section (.hero-sunset,
+   .arcade-hall, .snack-table, etc.): letting it stretch past that just
+   upscales the footage and goes soft, and every section being capped at
+   the same width keeps the whole site (gate included) reading as one
+   consistent size instead of this being the one part that's stretched
+   edge-to-edge. Centered on both axes so it sits in the middle of the
+   fixed full-viewport gate, letterboxed the same way a section would be
+   letterboxed at the sides.
+
+   Because that box is always exactly proportional to the video's own
+   content, plain percentage positions on .lair-pointer / .lair-bear-btn /
+   .lair-choice track the same point in the picture at every viewport size. */
+.lair-frame {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.lair-frame-inner {
+    position: relative;
+    width: 100%;
+    max-width: 1280px;
+    aspect-ratio: 16 / 9;
+    /* Lets .lair-bear-btn size itself in `cqw` (below) so it scales with
+       how large the video is actually being rendered, not the raw
+       viewport — matches `.hero-sunset`'s `cqh` character sizing. */
+    container-type: size;
+    container-name: lair;
+}
+
+/* ---------- Background video (intro loop) ---------- */
+.lair-video {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.lair-video video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.lair-video video[hidden] {
+    display: none;
+}
+
+/* ---------- Event video (ice-melt clip, then whichever death clip) ---------- */
+.lair-event-video {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.lair-event-video[hidden] {
+    display: none;
+}
+
+/* ---------- Quick links (X / buy / copy CA) ---------- */
+/* Same fixed-panel look as the persistent header controls elsewhere on the
+   site, but scoped here so it's visible the instant the lair appears.
+   Positioned in cqw/cqh (percentages of .lair-frame-inner) rather than raw
+   px-from-viewport-edge, so it sits on the framed video itself instead of
+   floating in the letterbox bars around it. */
+.lair-quicklinks {
+    position: absolute;
+    top: 3cqh;
+    right: 2.5cqw;
+    z-index: 6;
+    display: flex;
+    gap: 1.2cqw;
+}
+
+.lair-quicklink {
+    width: 6cqh;
+    height: 6cqh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #23262b 0%, #17191c 100%);
+    border: 1px solid #3a3d42;
+    border-radius: 6px;
+    color: var(--color-gold-soft);
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow:
+        0 4px 10px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    transition: all 0.2s ease;
+}
+
+.lair-quicklink svg {
+    width: 2.7cqh;
+    height: 2.7cqh;
+}
+
+.lair-quicklink:hover,
+.lair-quicklink:focus {
+    color: var(--color-gold);
+    border-color: var(--color-gold);
+    outline: none;
+    box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.5),
+        0 0 14px rgba(255, 215, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.lair-quicklink.is-copied {
+    color: var(--color-green-bright);
+    border-color: var(--color-green-bright);
+    box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.5),
+        0 0 14px rgba(0, 255, 136, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* ---------- Pointer text (intro only) ---------- */
+.lair-pointer {
+    position: absolute;
+    left: 50%;
+    top: 44%;
+    transform: translate(-50%, -100%);
+    /* Above .lair-bear-btn (z-index 5) so it never gets tucked behind the
+       button if the two ever overlap at an odd viewport size. */
+    z-index: 8;
+    text-align: center;
+    max-width: 80vw;
+    animation: lairPointerFloat 2.2s ease-in-out infinite;
+}
+
+.lair-pointer[hidden] {
+    display: none;
+}
+
+.lair-pointer-text {
+    font-family: var(--font-signage);
+    font-size: clamp(1.1rem, 3.2vw, 2.1rem);
+    letter-spacing: 0.03em;
+    color: #fff3d6;
+    text-shadow: 0 0 18px rgba(255, 68, 68, 0.55), 0 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+.lair-pointer-sub {
+    margin-top: 6px;
+    font-family: var(--font-board);
+    font-size: clamp(0.75rem, 1.6vw, 1rem);
+    letter-spacing: 0.12em;
+    color: var(--color-gold);
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+.lair-pointer-arrow {
+    margin-top: 8px;
+    font-size: clamp(1.2rem, 2.6vw, 1.8rem);
+    color: var(--color-gold);
+    text-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+}
+
+@keyframes lairPointerFloat {
+    0%, 100% { transform: translate(-50%, -100%) translateY(0); }
+    50%      { transform: translate(-50%, -100%) translateY(6px); }
+}
+
+/* ---------- Bye Bears button ---------- */
+/* Positioned in percentages of .lair-frame-inner (the video's own
+   proportional box, see above), so it stays on the table at every
+   viewport size — nudge `left`/`top` to line it up. Sized in `cqw` for
+   the same reason: it scales with how large the video is actually being
+   rendered rather than the raw viewport. */
+.lair-bear-btn {
+    position: absolute;
+    left: 50%;
+    top: 75%;
+    transform: translate(-65%, -100%);
+    width: clamp(160px, 22cqw, 320px);
+    aspect-ratio: 1348 / 880;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    z-index: 5;
+    transition: transform 0.08s;
+}
+
+.lair-bear-btn[hidden] {
+    display: none;
+}
+
+.lair-bear-btn:hover,
+.lair-bear-btn:focus {
+    transform: translate(-65%, -100%) scale(1.04);
+    outline: none;
+}
+
+.lair-bear-btn:disabled {
+    cursor: default;
+}
+
+.lair-bear-btn.is-pressed {
+    transform: translate(-65%, -80%) scale(0.95);
+}
+
+/* Both states are stacked and loaded from the start (so the pressed image
+   is already decoded and ready), but the pressed layer stays hidden until
+   clicked — then the two swap with no transition, so the change is instant
+   rather than a fade. */
+.lair-bear-btn-img {
+    position: absolute;
+    inset: 0;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.lair-bear-btn-img--pressed {
+    background-image: url('/images/bearsection/byebears-button-pressed.png');
+    z-index: 1;
+    opacity: 0;
+}
+
+.lair-bear-btn-img--normal {
+    background-image: url('/images/bearsection/byebears-button.png');
+    z-index: 2;
+}
+
+.lair-bear-btn.is-pressed .lair-bear-btn-img--normal {
+    opacity: 0;
+}
+
+.lair-bear-btn.is-pressed .lair-bear-btn-img--pressed {
+    opacity: 1;
+}
+
+/* ---------- Choice panel (bull / liquidation / bear spray) ---------- */
+.lair-choice {
+    position: absolute;
+    left: 50%;
+    bottom: 12%;
+    transform: translateX(-50%);
+    z-index: 6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    animation: lairChoiceIn 0.4s ease both;
+}
+
+.lair-choice[hidden] {
+    display: none;
+}
+
+/* A dark pill behind the text (not just a shadow) so it stays readable
+   even against the icy whites/light patches in the frozen last frame. */
+.lair-choice-title {
+    font-family: var(--font-signage);
+    font-size: clamp(1rem, 2.4cqw, 1.5rem);
+    letter-spacing: 0.03em;
+    color: #fff3d6;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
+    text-align: center;
+    max-width: 90cqw;
+    background: rgba(5, 19, 28, 0.75);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 999px;
+    padding: 0.8cqh 2.4cqw;
+}
+
+.lair-choice-options {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.lair-choice-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-board);
+    font-size: clamp(0.7rem, 1.4vw, 0.9rem);
+    letter-spacing: 0.08em;
+    color: #05131c;
+    background: var(--color-gold);
+    border: none;
+    border-radius: 999px;
+    padding: 12px 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    transition: transform 0.12s, box-shadow 0.12s;
+}
+
+.lair-choice-btn:hover,
+.lair-choice-btn:focus {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.35);
+    outline: none;
+}
+
+.lair-choice-btn:active {
+    transform: translateY(0) scale(0.97);
+}
+
+.lair-choice-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(5, 19, 28, 0.15);
+    font-size: 0.75em;
+}
+
+@keyframes lairChoiceIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(16px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ---------- Skip ---------- */
+/* Positioned/sized relative to .lair-frame-inner (percent + cqw), not the
+   raw viewport, so it sits on the framed video's own bottom edge instead
+   of floating in the letterbox space below it. */
+.lair-skip {
+    position: absolute;
+    left: 50%;
+    bottom: 4%;
+    transform: translateX(-50%);
+    font-family: var(--font-board);
+    font-weight: bold;
+    font-size: clamp(0.75rem, 1.6cqw, 1rem);
+    letter-spacing: 0.1em;
+    color: #fff;
+    background: rgba(5, 19, 28, 0.75);
+    border: 2px solid var(--color-gold);
+    border-radius: 999px;
+    padding: 1.6cqh 2.2cqw;
+    cursor: pointer;
+    z-index: 9;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 14px rgba(255, 215, 0, 0.3);
+    transition: color 0.15s, background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+    animation: lairSkipFadeIn 0.3s ease both;
+}
+
+.lair-skip:hover,
+.lair-skip:focus {
+    color: #05131c;
+    background: var(--color-gold);
+    border-color: var(--color-gold);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.45);
+    transform: translateX(-50%) scale(1.04);
+    outline: none;
+}
+
+@keyframes lairSkipFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ==========================================================================
+   BULL WIPE
+   Full-viewport green flash, sibling to the gate so its own transform is
+   unaffected by the gate's fade. Rises to cover the screen after a death
+   clip ends (see LairGate.js's runWipeThenFinish), then — once the real
+   page underneath is actually visible (revealBullWipe, called from
+   main.js) — falls away again to reveal it, playing the same transition
+   in reverse.
+   ========================================================================== */
+.bull-wipe {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(180deg, #00ff88 0%, #00e050 55%, #009e3a 100%);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    z-index: var(--z-bull-wipe);
+    pointer-events: none;
+    transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.bull-wipe.is-covering {
+    transform: scaleY(1);
+}
+
+/* Used by the skip button to snap the wipe back down with no animation,
+   in case it was already mid-rise when skip was clicked. */
+.bull-wipe.is-instant {
+    transition: none;
+}

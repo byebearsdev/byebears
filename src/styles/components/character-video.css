@@ -1,0 +1,127 @@
+/* ==========================================================================
+   CHARACTER VIDEO SPRITE
+   A small looping video overlaid on a section's background footage. Used on
+   the fire meme stage for the four beach characters (umbrella, lounging
+   Pepe, floating penguin, beach volleyball).
+
+   Positions below are tuned against that section's current background video
+   and are eyeballed, not exact — retune per-variant if the background ever
+   changes.
+   ========================================================================== */
+
+.character-video {
+    position: absolute;
+    z-index: 1;
+    cursor: pointer;
+}
+
+/* Covers both markup shapes CharacterVideo.js can render — a <video> for
+   video sources, an <img> for gifs — so sizing works no matter which one
+   ends up here. Without a rule for <img> too, a gif renders at its own
+   native pixel size and ignores the wrapper's `width` entirely. */
+.character-video video,
+.character-video img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ---------- Per-character placement ---------- */
+
+/* Floating out on the water. */
+.character-video--floating-penguin {
+    bottom: 40%;
+    left: 70%;
+    width: 10%;
+    z-index: 5;
+}
+/* Bottom-right corner of the frame. */
+.character-video--umbrella {
+    bottom: -8%;
+    right: 10%;
+    width: 30%;
+    z-index: 10;
+}
+
+/* Where the umbrella used to sit — up and to the right, near the ocean. */
+.character-video--lounging-pepe {
+    bottom: 46%;
+    right: 3%;
+    width: 16%;
+}
+
+
+/* On the sand, a little to the right of the wojak polar bear at the bar. */
+.character-video--volleyball {
+    bottom: 40%;
+    left: 57%;
+    width: 30%;
+}
+
+/* ---------- Speech bubble ---------- */
+/* Same 8-bit callout style used elsewhere on the site (originally the
+   snack-table props and the old meme-gif characters). Pops on hover — see
+   `initFireMemeStage()` in FireMemeStage.js for the mouseenter/mouseleave
+   listener that toggles `.is-active`. */
+.character-callout {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100%) scale(0);
+    background: var(--color-bg);
+    border: 3px solid var(--color-gold);
+    padding: 8px 14px;
+    font-family: var(--font-arcade);
+    font-size: clamp(0.4rem, 1vw, 0.7rem);
+    color: var(--color-gold);
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+    white-space: nowrap;
+    z-index: 20;
+    pointer-events: none;
+    opacity: 0;
+    box-shadow:
+        0 0 10px rgba(255, 215, 0, 0.3),
+        inset 0 0 10px rgba(255, 215, 0, 0.05);
+    image-rendering: pixelated;
+}
+
+/* Pixelated speech-bubble tail: gold outer triangle, background-coloured
+   one layered on top so it reads as a notch rather than a solid wedge. */
+.character-callout::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 10px solid var(--color-gold);
+}
+
+.character-callout::before {
+    content: '';
+    position: absolute;
+    bottom: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid var(--color-bg);
+    z-index: 1;
+}
+
+.character-callout.is-active {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-100%) scale(1);
+    animation: characterCalloutPop 0.2s steps(3) forwards;
+}
+
+@keyframes characterCalloutPop {
+    0%   { transform: translateX(-50%) translateY(-100%) scale(0);   opacity: 0; }
+    50%  { transform: translateX(-50%) translateY(-100%) scale(1.2); opacity: 1; }
+    100% { transform: translateX(-50%) translateY(-100%) scale(1);   opacity: 1; }
+}

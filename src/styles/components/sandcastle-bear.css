@@ -1,0 +1,213 @@
+/* ==========================================================================
+   COMPONENT — SANDCASTLE BEAR
+   Two images stacked in the same spot: the sandcastle sits on top and erodes
+   from the top down (via the `data-dig` stages below, a `clip-path` that eats
+   further into the top edge each click) as it's clicked. The bear stays
+   hidden throughout — it only pops in on the final click, once the
+   sandcastle is fully cleared, rather than emerging gradually as the
+   sandcastle erodes.
+
+   Sized in `cqw`/`cqh` to match the arcade hall's other props (the cabinets,
+   Chad) — see `.arcade-hall-stage { container-type: size; }` in
+   arcade-hall.css. Position is a placeholder; retune once there's a real
+   beach background to sit on.
+   ========================================================================== */
+
+.sandcastle-bear {
+    position: absolute;
+    right: 15%;
+    bottom: 1%;
+    width: 30cqw;
+    /* Below .arcade-chad's z-index (4, in arcade-hall.css) on purpose — the
+       artwork has him kneeling right at the sandcastle, so he needs to
+       render in front where they overlap. That would normally also make
+       him swallow clicks meant for the sandcastle underneath, but
+       `.arcade-chad` is `pointer-events: none` precisely so clicks pass
+       through him to whatever's beneath instead. */
+    z-index: 2;
+}
+
+/* ---------- Bear — underneath, hidden and disabled until dug out ---------- */
+/*
+ * Normal flow (not absolutely positioned): this is what gives `.sandcastle-bear`
+ * a real height, sized off the bear image's own aspect ratio. The sandcastle
+ * below then stretches over exactly that box via `inset: 0`. Without one
+ * element establishing a real size this way, a `position: absolute` wrapper
+ * whose only children are ALSO absolutely positioned collapses to zero
+ * height — its children don't count toward its auto size — and the whole
+ * component silently becomes unclickable.
+ *
+ * `opacity`/`disabled` toggle together: `initSandcastleBear()` only flips
+ * `face.disabled` (on the final click), so tying visibility to `:disabled`
+ * here means no separate "revealed" class is needed to keep the two in sync.
+ */
+.sandcastle-bear-face {
+    position: relative;
+    display: block;
+    width: 50%;
+    z-index: 1;
+    opacity: 0;
+    transform: scale(0.85);
+    filter: drop-shadow(0 0 14px rgba(255, 215, 0, 0));
+    transition: opacity 0.3s ease, transform 0.3s ease, filter 0.2s ease;
+    margin-left: 35%;
+}
+
+.sandcastle-bear-face img {
+    width: 100%;
+    height: auto;
+    display: block;
+    pointer-events: none;
+}
+
+.sandcastle-bear-face:not(:disabled) {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.sandcastle-bear-face:not(:disabled):hover {
+    filter: drop-shadow(0 0 14px rgba(255, 215, 0, 0.85));
+    transform: scale(1.05);
+}
+
+/* ---------- Whack reaction ---------- */
+@keyframes bearWhack {
+    0%   { transform: scale(1); }
+    30%  { transform: scale(0.85, 1.12); }
+    55%  { transform: scale(1.12, 0.88); }
+    100% { transform: scale(1); }
+}
+
+.sandcastle-bear-face:not(:disabled).is-whacked {
+    animation: bearWhack 0.25s ease;
+}
+
+/*
+ * Top-right corner, inside the face's own bounds — not above it (clipped by
+ * the fixed marquee/header when scrolled into view, see the payoff comment
+ * below) and not below it either (the bear sits right at the bottom edge of
+ * the arcade-hall section, so anything anchored near the bottom of the face
+ * runs into that section boundary).
+ */
+.sandcastle-bear-combo {
+    position: absolute;
+    top: 4%;
+    right: 4%;
+    font-family: var(--font-arcade);
+    font-size: clamp(6px, 1.4cqw, 11px);
+    color: var(--color-gold);
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.7);
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.sandcastle-bear-combo.is-visible {
+    opacity: 1;
+}
+
+/* Milestone payoff message, centred directly over the bear's face — not
+   above or below it, so it's never at the mercy of where the section
+   happens to land relative to the fixed header when scrolled into view
+   (see the comment on `.sandcastle-bear-combo` above). */
+.sandcastle-bear-payoff {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.7);
+    font-family: var(--font-arcade);
+    font-size: clamp(6px, 1.5cqw, 12px);
+    color: var(--color-gold);
+    background: var(--color-bg);
+    border: 2px solid var(--color-gold);
+    padding: 6px 10px;
+    white-space: nowrap;
+    opacity: 0;
+    z-index: 4;
+    pointer-events: none;
+    text-shadow: 0 0 6px rgba(255, 215, 0, 0.6);
+}
+
+.sandcastle-bear-payoff.is-active {
+    animation: bearPayoffPop 1.8s ease forwards;
+}
+
+@keyframes bearPayoffPop {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
+    15%  { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+    25%  { transform: translate(-50%, -50%) scale(1); }
+    80%  { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+}
+
+.sandcastle-bear-face:disabled {
+    cursor: default;
+}
+
+/* ---------- Sandcastle — on top, erodes from the top down ---------- */
+/*
+ * `clip-path: inset(top ...)` cuts the visible box off that far down from
+ * the top edge, so the sandcastle visibly erodes as it's dug. The bear
+ * beneath stays hidden throughout (see `.sandcastle-bear-face` above) — the
+ * eroded area just exposes whatever's behind the component, not the bear.
+ * Clipped-away area is also removed from hit-testing, so once part of the
+ * sandcastle has eroded away, clicks there fall through rather than still
+ * registering as a dig.
+ */
+.sandcastle-bear-mound {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    clip-path: inset(0 0 0 0);
+    transition: clip-path 0.35s ease, filter 0.2s ease;
+}
+
+.sandcastle-bear-mound img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    pointer-events: none;
+}
+
+.sandcastle-bear-mound:hover {
+    filter: brightness(1.15);
+}
+
+.sandcastle-bear-mound[data-dig="1"] { clip-path: inset(34% 0 0 0); }
+.sandcastle-bear-mound[data-dig="2"] { clip-path: inset(68% 0 0 0); }
+
+.sandcastle-bear-mound.is-cleared {
+    clip-path: inset(100% 0 0 0);
+    pointer-events: none;
+}
+
+/* ---------- Hover hint, matching the snack-table props' "▶ CLICK" style ---------- */
+.sandcastle-bear-mound::after,
+.sandcastle-bear-face:not(:disabled)::after {
+    content: '\25B6 DIG';
+    position: absolute;
+    bottom: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-arcade);
+    font-size: 7px;
+    color: var(--color-gold);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    text-shadow: 0 0 6px rgba(255, 215, 0, 0.8);
+}
+
+.sandcastle-bear-face:not(:disabled)::after {
+    content: '\25B6 ???';
+}
+
+.sandcastle-bear-mound:hover::after,
+.sandcastle-bear-face:not(:disabled):hover::after {
+    opacity: 1;
+}

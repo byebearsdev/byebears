@@ -1,0 +1,23 @@
+/* ==========================================================================
+   NEON WORD
+   Disclaimer text is split into per-word spans that light up one after another
+   like a failing neon sign. The glow colour is inherited from the parent line.
+   ========================================================================== */
+
+.neon-word {
+    display: inline-block;
+    opacity: 0.2;
+    text-shadow: none;
+    transition: none;
+}
+
+.neon-word.is-lit {
+    opacity: 1;
+    animation: neonFlicker 0.15s steps(2) 1;
+}
+
+@keyframes neonFlicker {
+    0%   { opacity: 0.3; }
+    50%  { opacity: 1; }
+    100% { opacity: 1; }
+}

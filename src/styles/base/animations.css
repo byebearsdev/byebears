@@ -1,0 +1,11 @@
+/* ==========================================================================
+   SHARED ANIMATIONS
+   Keyframes used by more than one component. Single-use keyframes live
+   alongside the component that plays them.
+   ========================================================================== */
+
+/* Hard two-frame blink, the workhorse of the whole 8-bit look. */
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: var(--blink-min, 0.5); }
+}

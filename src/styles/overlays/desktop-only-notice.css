@@ -1,0 +1,131 @@
+/* ==========================================================================
+   OVERLAY — DESKTOP-ONLY NOTICE
+   Shown instead of launching an iframe game when the visitor is on a touch
+   device or a small screen.
+   ========================================================================== */
+
+.desktop-only-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.88);
+    z-index: var(--z-desktop-notice);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    font-family: var(--font-arcade);
+}
+
+.desktop-only-overlay.is-open {
+    display: flex;
+    opacity: 1;
+}
+
+/* Double-outlined cabinet panel: dark ring, then a gold ring, then the glow. */
+.desktop-only-box {
+    position: relative;
+    background: var(--color-bg);
+    border: 3px solid var(--color-orange);
+    padding: 28px 26px 22px;
+    width: min(380px, 92vw);
+    max-height: 92dvh;
+    overflow-y: auto;
+    text-align: center;
+    box-shadow:
+        0 0 0 3px var(--color-bg),
+        0 0 0 5px var(--color-gold),
+        0 0 25px rgba(255, 107, 0, 0.6),
+        0 0 55px rgba(255, 215, 0, 0.25),
+        inset 0 0 30px rgba(0, 0, 0, 0.7);
+    background-image: repeating-linear-gradient(
+        0deg,
+        transparent, transparent 2px,
+        rgba(0, 0, 0, 0.18) 2px, rgba(0, 0, 0, 0.18) 4px
+    );
+    image-rendering: pixelated;
+}
+
+.desktop-only-close {
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: var(--color-orange);
+    font-family: var(--font-arcade);
+    font-size: 14px;
+    cursor: pointer;
+    padding: 4px 6px;
+    line-height: 1;
+}
+
+.desktop-only-close:hover {
+    color: var(--color-red);
+}
+
+.desktop-only-icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+    animation: desktopIconFlicker 1.6s steps(2) infinite;
+}
+
+@keyframes desktopIconFlicker {
+    0%, 49%   { opacity: 1;   filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6)); }
+    50%, 100% { opacity: 0.6; filter: none; }
+}
+
+.desktop-only-title {
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    color: var(--color-gold);
+    text-shadow: 2px 2px 0 #aa4400, 0 0 10px rgba(255, 215, 0, 0.6);
+    margin-bottom: 10px;
+}
+
+.desktop-only-game {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--color-green);
+    text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+    margin-bottom: 16px;
+    padding: 6px 0;
+    border-top: 2px dashed rgba(0, 255, 136, 0.4);
+    border-bottom: 2px dashed rgba(0, 255, 136, 0.4);
+}
+
+.desktop-only-msg {
+    font-size: 9px;
+    line-height: 1.9;
+    letter-spacing: 0.1em;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+.desktop-only-ok {
+    background: var(--color-bg-panel);
+    border: 2px solid var(--color-green);
+    color: var(--color-green);
+    font-family: var(--font-arcade);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    padding: 10px 18px;
+    cursor: pointer;
+    text-shadow: 0 0 6px rgba(0, 255, 136, 0.6);
+    box-shadow: 0 0 12px rgba(0, 255, 136, 0.35);
+    transition: all 0.15s ease;
+    animation: desktopOkBlink 1.2s steps(2) infinite;
+}
+
+.desktop-only-ok:hover,
+.desktop-only-ok:active {
+    background: var(--color-green);
+    color: var(--color-bg);
+    text-shadow: none;
+}
+
+@keyframes desktopOkBlink {
+    0%, 49%   { border-color: var(--color-green); }
+    50%, 100% { border-color: var(--color-gold); }
+}

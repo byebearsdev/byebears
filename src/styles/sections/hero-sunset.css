@@ -1,0 +1,115 @@
+/* ==========================================================================
+   SECTION — HERO SUNSET
+   Static background image (bearbg01.png), with the character art layered
+   on top.
+   ========================================================================== */
+
+.hero-sunset {
+    position: relative;
+    width: 100%;
+    /* Capped to match every other section (all natively 1280px, or in this
+       image's case downscaled slightly from 1672px) — keeps the whole page
+       one consistent width instead of this section alone stretching wider
+       than the rest on a big screen. */
+    max-width: 1280px;
+    aspect-ratio: 16 / 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    background: transparent;
+    overflow: hidden;
+    /* Size container for the characters below: they're sized in `cqh` (a
+       percentage of THIS element's own rendered height) rather than `vh` (a
+       percentage of the browser window's height). Those two only match when
+       the viewport happens to be exactly 16:9 — on a wide-but-short laptop
+       window, this section renders taller than the viewport (its height is
+       driven by its width via aspect-ratio), so `vh`-sized characters read
+       as undersized relative to the frame around them. `cqh` scales with the
+       section itself, so the characters stay correctly proportioned to their
+       frame at any window size. Same technique as the phone screen overlay
+       in phone-menu.css. */
+    container-type: size;
+    container-name: hero;
+}
+
+/* ---------- Background image ---------- */
+/* Fills the fixed 16:9 box behind everything else; `cover` crops rather than
+   letterboxes if the art's native ratio doesn't match exactly. */
+.hero-sunset-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.hero-sunset-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ---------- Foreground ---------- */
+.hero-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 5;
+}
+
+.hero-characters {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.hero-character {
+    animation: heroCharacterFloat 4s ease-in-out infinite;
+}
+
+.hero-character img {
+    display: block;
+    height: 120%;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 20px rgba(255, 107, 0, 0.3));
+}
+
+@keyframes heroCharacterFloat {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-12px); }
+}
+
+/* Chad anchors the centre, slightly in front of the two girls. */
+.hero-character--chad {
+    height: 54cqh;
+    z-index: 2;
+}
+
+/* The girls' crops run further down the body than Chad's waist-up shot, so
+   they're sized taller to read as roughly the same standing height, and
+   tuck in slightly behind his arms for a huddled group-shot feel. Staggered
+   animation delays keep the three from bobbing in lockstep. `top` nudges
+   them down slightly relative to Chad — `position: relative` shifts them
+   visually without disturbing the flex layout or fighting the float
+   animation's own `transform`. */
+.hero-character--girl-left,
+.hero-character--girl-right {
+    height: 52cqh;
+    z-index: 1;
+    position: relative;
+    top: 10cqh;
+}
+
+.hero-character--girl-left {
+    margin-right: -3%;
+    animation-delay: -1.3s;
+}
+
+.hero-character--girl-right {
+    margin-left: -3%;
+    animation-delay: -2.6s;
+}

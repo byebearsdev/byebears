@@ -1,0 +1,269 @@
+/* ==========================================================================
+   SECTION — PHONE MENU
+   Looping footage (section06.mp4) of Chad holding up a phone, with a
+   wojak-polar-bear flailing in the ocean behind him. The phone's screen is
+   blank in the footage on purpose — `.phone-screen-overlay` below is real,
+   interactive HTML positioned over it.
+
+   `container-type: size` on `.phone-menu` mirrors the technique used for the
+   hero's characters: everything inside is sized in `cqw`/`cqh` (percentages
+   of THIS section's own rendered box) rather than `vh`/`vw`, so the overlay
+   tracks the phone screen at any window size, not just a 16:9 one.
+   ========================================================================== */
+
+.phone-menu {
+    position: relative;
+    width: 100%;
+    /* section06.mp4 is natively 1280px wide — capping here (same as
+       .snack-table) keeps it from being upscaled and going soft on wider
+       screens. The phone screen and iceberg are positioned in cqw/cqh
+       (percentages of this same box), so they scale down and stay lined
+       up regardless. */
+    max-width: 1280px;
+    aspect-ratio: 16 / 9;
+    margin: 0 auto;
+    overflow: hidden;
+    background: #000;
+    container-type: size;
+    container-name: phone;
+}
+
+.phone-menu-video {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.phone-menu-video video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ---------- The phone's screen ----------
+   Coordinates tuned by eye against section06.mp4's actual phone position —
+   retune here if the footage ever changes. Deliberately transparent: the
+   video's own dark screen shows through as the "backlight," so real UI reads
+   as if it's actually displayed on the phone rather than floating on top. */
+.phone-screen-overlay {
+    position: absolute;
+    left: 21.5cqw;
+    top: 12.5cqh;
+    width: 19.5cqw;
+    height: 65.5cqh;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 2cqw;
+    /* Tracks the phone's own subtle bob in the footage: up over 2s, down
+       over 2s. Keyframes are evenly spaced (0% / 50% / 100%), so with a 4s
+       linear-timed loop each half naturally takes 2s. */
+    animation: phoneBob 4s ease-in-out infinite;
+}
+
+@keyframes phoneBob {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(1.1cqh); }
+}
+
+.phone-screen-header {
+    flex-shrink: 0;
+    height: 6.5cqh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-signage);
+    font-size: 2.3cqw;
+    letter-spacing: 0.08em;
+    color: var(--color-gold);
+    text-shadow: 0 0 8px rgba(255, 200, 90, 0.5);
+}
+
+.phone-screen-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1cqh;
+    padding: 0 1.1cqw;
+    overflow: hidden;
+}
+
+/* ---------- App rows ---------- */
+.phone-app-btn {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 1.3cqw;
+    height: 8cqh;
+    padding: 0 1.1cqw;
+    border-radius: 1.4cqw;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.phone-app-btn:hover {
+    background: rgba(255, 190, 80, 0.16);
+    transform: translateX(0.3cqw);
+}
+
+.phone-app-btn:active {
+    transform: scale(0.97);
+}
+
+.phone-app-btn-tile {
+    flex-shrink: 0;
+    width: 5cqh;
+    height: 5cqh;
+    border-radius: 1.1cqw;
+    background: linear-gradient(160deg, #ffb347 0%, #ff6b00 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.phone-app-btn-icon {
+    width: 2.7cqh;
+    height: 2.7cqh;
+    fill: #1a1a2e;
+}
+
+.phone-app-btn-label {
+    flex: 1;
+    font-family: var(--font-board);
+    font-weight: 700;
+    font-size: 1.35cqw;
+    letter-spacing: 0.01em;
+    color: #eaf2f6;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.phone-app-btn-chevron {
+    flex-shrink: 0;
+    font-size: 1.8cqw;
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.phone-app-btn-copied {
+    flex: 1;
+    font-family: var(--font-board);
+    font-weight: 700;
+    font-size: 1.35cqw;
+    color: #6effa3;
+}
+
+/* ---------- Iceberg ----------
+   Floating on the water, to the drowning wojak's left. Position tuned by eye
+   against section06.mp4 — retune here if the footage ever changes. A
+   clicker: rapid clicks fill the heat meter below it; filling it melts the
+   iceberg away with a gold payoff message before it reforms, same overall
+   pattern as the sandcastle bear. */
+.phone-menu-iceberg {
+    position: absolute;
+    left: 82cqw;
+    top: 40cqh;
+    width: 17cqw;
+    z-index: 1;
+    cursor: pointer;
+    /* Gentle float on the water — a different period from the phone's own
+       bob (3s vs 4s) so the two never look mechanically in sync. */
+    animation: icebergBob 3s ease-in-out infinite;
+}
+
+@keyframes icebergBob {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-1.4cqh); }
+}
+
+.phone-menu-iceberg img {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35));
+    transition: filter 0.2s ease, transform 1s ease-in, opacity 1s ease-in;
+    transform-origin: bottom center;
+}
+
+.phone-menu-iceberg:hover img {
+    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35)) drop-shadow(0 0 12px rgba(160, 220, 255, 0.7));
+}
+
+/* Per-click shake, on the image so it doesn't fight the constant bob
+   animation running on the wrapper above. */
+@keyframes icebergShake {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    30%      { transform: translateY(-3%) rotate(-2deg); }
+    60%      { transform: translateY(1%) rotate(2deg); }
+}
+
+.phone-menu-iceberg.is-clicked img {
+    animation: icebergShake 0.3s ease;
+}
+
+/* Melts down into the water once the heat meter fills, then reforms when
+   `.is-melted` is removed (the transition on `.phone-menu-iceberg img`
+   above handles both directions). */
+.phone-menu-iceberg.is-melted img {
+    transform: scaleY(0.05) scaleX(1.25) translateY(10%);
+    opacity: 0;
+    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35)) blur(2px);
+}
+
+/* ---------- Heat meter ---------- */
+.iceberg-meter-track {
+    position: absolute;
+    left: 12%;
+    right: 12%;
+    bottom: -18%;
+    height: 3cqh;
+    background: rgba(6, 14, 24, 0.6);
+    border: 1px solid rgba(160, 220, 255, 0.4);
+    border-radius: 4px;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.iceberg-meter-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #4fa8e0, #eaf6ff);
+    transition: width 0.25s ease-out;
+}
+
+/* ---------- Payoff message, popping above the iceberg ---------- */
+.iceberg-payoff {
+    position: absolute;
+    left: 50%;
+    bottom: 100%;
+    margin-bottom: 6px;
+    transform: translateX(-50%) translateY(10px) scale(0.8);
+    font-family: var(--font-arcade);
+    font-size: clamp(6px, 1.3cqw, 10px);
+    color: #eaf6ff;
+    background: #061018;
+    border: 2px solid #9fd8ff;
+    padding: 5px 9px;
+    white-space: nowrap;
+    opacity: 0;
+    z-index: 2;
+    pointer-events: none;
+    text-shadow: 0 0 6px rgba(160, 220, 255, 0.7);
+}
+
+.iceberg-payoff.is-active {
+    animation: icebergPayoffPop 1.8s ease forwards;
+}
+
+@keyframes icebergPayoffPop {
+    0%   { opacity: 0; transform: translateX(-50%) translateY(10px) scale(0.8); }
+    15%  { opacity: 1; transform: translateX(-50%) translateY(0) scale(1.05); }
+    25%  { transform: translateX(-50%) translateY(0) scale(1); }
+    80%  { opacity: 1; }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-10px) scale(0.95); }
+}

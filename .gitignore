@@ -1,0 +1,16 @@
+node_modules/
+dist/
+dist-verify/
+.netlify/
+
+# Verification artifacts
+scripts/screenshots/
+
+# Comparison copy of the pre-refactor page (see reference/)
+public/__original.html
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

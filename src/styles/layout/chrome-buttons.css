@@ -1,0 +1,89 @@
+/* ==========================================================================
+   CHROME BUTTONS  (music toggle + menu)
+   Two fixed 40px controls in the top-right corner, styled like a gate panel's
+   physical buttons. That shared shell lives in one place; each button only
+   declares its own colour.
+
+   Both start hidden and are revealed by JS: the menu button once loading
+   finishes, the music toggle once the soundtrack actually starts.
+   ========================================================================== */
+
+.chrome-button {
+    position: fixed;
+    top: 38px;
+    z-index: var(--z-chrome-button);
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #23262b 0%, #17191c 100%);
+    border: 1px solid #3a3d42;
+    border-radius: 6px;
+    box-shadow:
+        0 4px 10px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    transition: all 0.2s ease;
+}
+
+.chrome-button:hover {
+    border-color: var(--color-gold);
+    box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.5),
+        0 0 14px rgba(255, 215, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* ==================== MUSIC TOGGLE ==================== */
+.bgm-toggle {
+    right: 72px;
+    font-family: var(--font-signage);
+    font-size: 18px;
+    color: var(--color-gold-soft);
+    line-height: 1;
+    padding: 0;
+}
+
+.bgm-toggle:hover {
+    color: var(--color-gold);
+}
+
+.bgm-toggle.is-muted {
+    color: #565a60;
+}
+
+.bgm-note-icon {
+    animation: noteBounce 1.4s ease-in-out infinite;
+}
+
+.bgm-toggle.is-muted .bgm-note-icon {
+    animation: none;
+    opacity: 0.6;
+}
+
+@keyframes noteBounce {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-2px); }
+}
+
+/* ==================== MENU (HAMBURGER) ==================== */
+.menu-button {
+    right: 20px;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 8px;
+}
+
+.menu-button-line {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--color-gold-soft);
+    border-radius: 2px;
+    transition: all 0.2s ease;
+}
+
+.menu-button:hover .menu-button-line {
+    background: var(--color-gold);
+}

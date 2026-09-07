@@ -1,0 +1,155 @@
+/* ==========================================================================
+   PAGE CHROME
+   The fixed backdrop, the scrolling viewport, and the global sun-glow wash.
+   ========================================================================== */
+
+/* ---------- Fixed backdrop, behind all content ---------- */
+.arcade-backdrop {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    z-index: var(--z-backdrop);
+    background:
+        /* fine pixel grid */
+        repeating-linear-gradient(
+            0deg,
+            transparent 0px, transparent 8px,
+            rgba(255, 107, 0, 0.03) 8px, rgba(255, 107, 0, 0.03) 9px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent 0px, transparent 8px,
+            rgba(0, 255, 136, 0.03) 8px, rgba(0, 255, 136, 0.03) 9px
+        ),
+        /* coloured bloom from each edge */
+        radial-gradient(ellipse at 50% 0%,   rgba(255, 107, 0, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 100%, rgba(0, 255, 136, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 0% 50%,   rgba(255, 0, 255, 0.10) 0%, transparent 40%),
+        radial-gradient(ellipse at 100% 50%, rgba(0, 255, 255, 0.10) 0%, transparent 40%),
+        /* base */
+        linear-gradient(180deg, #0d0d1a 0%, #0a0a12 30%, #0a0a12 70%, #0d0d1a 100%);
+}
+
+/* ---------- The one scrolling element on the page ---------- */
+/* Starts hidden; the loading screen reveals it. */
+.scroll-container {
+    position: relative;
+    width: 100vw;
+    height: 100dvh;
+    /* Clears the fixed marquee (32px) + header (50px) so the first section
+       isn't tucked under them. */
+    padding-top: 82px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    z-index: var(--z-content);
+    visibility: hidden;
+}
+
+/* ---------- Global heat-shimmer distortion ---------- */
+/*
+ * Actual distortion, not a texture on top — see the doc comment on
+ * `GlobalHeatHaze()` in chrome/PageChrome.js for why. The filter itself is
+ * defined there (inline SVG, id="heatDistort"); this rule just applies it.
+ *
+ * The `background` is a deliberately light touch: colourless, the warp reads
+ * as an ambiguous glitch rather than "hot." A previous pass over-corrected
+ * this with `mix-blend-mode: soft-light` at 45% strength, which recoloured
+ * every section toward orange. Plain alpha compositing at 10% is much easier
+ * to reason about and keeps this to a hint — just enough that the wobble
+ * reads as heat.
+ */
+.global-heat-haze {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    pointer-events: none;
+    z-index: var(--z-global-haze);
+    backdrop-filter: url(#heatDistort);
+    -webkit-backdrop-filter: url(#heatDistort);
+    background: color-mix(in srgb, var(--color-orange) 10%, transparent);
+}
+
+/* ---------- Global sun-glow wash ---------- */
+/*
+ * Replaces the old CRT scanline overlay. Uses the brand's gold tokens so it
+ * stays in-palette, and is additive warm light (brightens what's under it)
+ * rather than the old scanlines' opaque black bands (which darkened it).
+ *
+ * Two layers:
+ *   1. A soft glow anchored above the viewport, like an overhead sun.
+ *   2. Rays of varying width fanning DOWN from that same point. Real
+ *      crepuscular rays converge from a source rather than running in
+ *      parallel — a `repeating-linear-gradient` reads as diagonal stripes
+ *      no matter how it's tuned, so this uses a `conic-gradient` pinned to
+ *      the glow's origin instead. The fan sways gently side to side (like
+ *      light shifting through moving palm fronds) rather than sliding in
+ *      one constant direction, and a slower shimmer keeps it from ever
+ *      looking perfectly still.
+ */
+@property --ray-angle {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 90deg;
+}
+
+.global-sun-glow {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    pointer-events: none;
+    z-index: var(--z-global-overlay);
+    background:
+        radial-gradient(
+            ellipse 80% 55% at 50% -15%,
+            color-mix(in srgb, var(--color-gold-soft) 28%, transparent) 0%,
+            transparent 65%
+        ),
+        conic-gradient(
+            from var(--ray-angle) at 50% -15%,
+            transparent 0deg,
+            transparent 6deg,
+            color-mix(in srgb, var(--color-gold) 9%, transparent) 11deg,
+            transparent 16deg,
+            transparent 25deg,
+            color-mix(in srgb, var(--color-gold) 6%, transparent) 30deg,
+            transparent 35deg,
+            transparent 47deg,
+            color-mix(in srgb, var(--color-gold) 11%, transparent) 53deg,
+            transparent 59deg,
+            transparent 70deg,
+            color-mix(in srgb, var(--color-gold) 7%, transparent) 75deg,
+            transparent 81deg,
+            transparent 94deg,
+            color-mix(in srgb, var(--color-gold) 10%, transparent) 100deg,
+            transparent 106deg,
+            transparent 119deg,
+            color-mix(in srgb, var(--color-gold) 6%, transparent) 124deg,
+            transparent 130deg,
+            transparent 143deg,
+            color-mix(in srgb, var(--color-gold) 9%, transparent) 149deg,
+            transparent 155deg,
+            transparent 168deg,
+            color-mix(in srgb, var(--color-gold) 8%, transparent) 173deg,
+            transparent 179deg,
+            transparent 360deg
+        );
+    animation:
+        sunraysSway 26s ease-in-out infinite,
+        sunraysShimmer 9s ease-in-out infinite;
+}
+
+/* The fan of rays rocks a few degrees either side of straight down. */
+@keyframes sunraysSway {
+    0%, 100% { --ray-angle: 82deg; }
+    50%      { --ray-angle: 98deg; }
+}
+
+/* Runs on its own, shorter period so it never syncs up with the sway. */
+@keyframes sunraysShimmer {
+    0%, 100% { opacity: 0.85; }
+    50%      { opacity: 1; }
+}

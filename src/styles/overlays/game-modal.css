@@ -1,0 +1,49 @@
+/* ==========================================================================
+   OVERLAY — GAME MODAL
+   Fullscreen iframe for the embedded arcade game. Desktop only — the launch
+   handler shows `desktop-only-notice` on touch or small screens instead.
+   ========================================================================== */
+
+.game-modal {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    background: #000;
+    z-index: var(--z-game-modal);
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.game-modal.is-open {
+    display: block;
+    opacity: 1;
+}
+
+.game-modal iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.game-modal-title {
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    font-family: var(--font-arcade);
+    font-size: 1rem;
+    color: var(--color-gold);
+    text-shadow: 2px 2px 0 #000, 0 0 10px rgba(255, 215, 0, 0.5);
+    z-index: 10000;
+}
+
+/* The shared close button needs absolute placement in this modal. */
+.game-modal .modal-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 0.8rem;
+    padding: 12px 20px;
+    z-index: 10000;
+}

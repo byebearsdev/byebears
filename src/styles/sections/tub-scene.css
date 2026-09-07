@@ -1,0 +1,91 @@
+/* ==========================================================================
+   SECTION — TUB SCENE
+   Looping video of Chad's hot tub, with the yacht gif floating on the water
+   as a real overlay. Its audio fades in when the section reaches the middle
+   of the viewport (see section-video-audio.js).
+
+   `container-type: size` mirrors the technique used for the hero's
+   characters and the phone screen overlay: the boat is sized in `cqw`/`cqh`
+   (percentages of THIS section's own rendered box) so it tracks the water
+   at any window size, not just a 16:9 one.
+   ========================================================================== */
+
+.tub-scene {
+    position: relative;
+    width: 100%;
+    /* section05.mp4 is natively 1280px wide — capping here (same as
+       .snack-table) keeps it from being upscaled and going soft on wider
+       screens. The boat is positioned in cqw/cqh (percentages of this same
+       box), so it scales down and stays lined up regardless. */
+    max-width: 1280px;
+    aspect-ratio: 16 / 9;
+    margin: 0 auto;
+    overflow: hidden;
+    background: #000;
+    container-type: size;
+    container-name: tub;
+}
+
+/* ---------- Zoomable stage ----------
+   Video + boat scale together as one unit, so clicking the boat reads as
+   the camera pushing in on it rather than the boat itself growing. The
+   origin is the boat's own centre point (see `.tub-scene-boat` below) —
+   retune both together if the boat ever moves. */
+.tub-scene-stage {
+    position: absolute;
+    inset: 0;
+    transform-origin: 47cqw 80cqh;
+    transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.tub-scene-stage.is-zoomed {
+    transform: scale(3.4);
+}
+
+.tub-scene-video {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.tub-scene-video video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ---------- Toy yacht ----------
+   Floating on the tub water. Position tuned by eye against
+   section05_base.mp4 — retune here if the footage ever changes. Its centre
+   (left + width/2, top + height/2 — the image is ~16:9 like the section
+   itself, so the two units line up 1:1) must match `.tub-scene-stage`'s
+   `transform-origin` above, or the zoom will push in off-target. */
+.tub-scene-boat {
+    position: absolute;
+    left: 36cqw;
+    top: 60cqh;
+    width: 22cqw;
+    z-index: 1;
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.tub-scene-boat img {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35));
+    pointer-events: none;
+}
+
+.tub-scene-boat:hover {
+    transform: scale(1.06);
+    filter: drop-shadow(0 0 14px rgba(255, 215, 0, 0.5));
+}
+
+/* Once zoomed in, drop the hover lift — the whole stage is already scaled
+   up and a second scale on top of it looks jumpy. */
+.tub-scene-stage.is-zoomed .tub-scene-boat:hover {
+    transform: none;
+}

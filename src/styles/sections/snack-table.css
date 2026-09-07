@@ -1,0 +1,90 @@
+/* ==========================================================================
+   SECTION — SNACK TABLE
+   Looping video of the beach table, with clickable props positioned on top.
+   Each prop opens a terminal popup; some also play their own theme song.
+
+   Prop coordinates are inline styles generated from `snack-items.js`, since
+   they are per-instance layout data rather than shared styling.
+   ========================================================================== */
+
+.snack-table {
+    position: relative;
+    width: 100%;
+    /* tsunami.mp4 is natively 1280px wide — capping the section here (rather
+       than just the video) keeps it from being upscaled and going soft on
+       wider screens, while keeping the snack-item percentage positions
+       (relative to this same box) lined up with the footage either way. */
+    max-width: 1280px;
+    margin: 0 auto;
+    overflow: hidden;
+    background: #000;
+    user-select: none;
+}
+
+.snack-table video {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ---------- Clickable prop ---------- */
+.snack-item {
+    position: absolute;
+    cursor: pointer;
+    transform-origin: center bottom;
+    transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+/*
+ * `width: 120%` deliberately overflows the wrapper: the wrapper width is the
+ * tuned hit-box, while the artwork bleeds past it so the transparent margins
+ * baked into each PNG don't shrink the visible prop.
+ */
+.snack-item img {
+    width: 120%;
+    height: auto;
+    display: block;
+    pointer-events: none;
+}
+
+.snack-item:hover {
+    filter: drop-shadow(0 0 14px rgba(255, 215, 0, 0.85)) brightness(1.1);
+    transform: scale(1.07);
+    z-index: 50 !important;
+}
+
+/* ---------- "CLICK" affordance ---------- */
+.snack-item::after {
+    content: '▶ CLICK';
+    position: absolute;
+    bottom: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-arcade);
+    font-size: 7px;
+    color: var(--color-gold);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    text-shadow: 0 0 6px rgba(255, 215, 0, 0.8);
+}
+
+.snack-item:hover::after {
+    opacity: 1;
+}
+
+/* ---------- Attention pulse ---------- */
+/* JS walks this class along the props one at a time while the section is in
+   view, so exactly one prop is ever pulsing. */
+.snack-item.is-pulsing {
+    animation: snackPulseHint 1.1s ease-in-out;
+    z-index: 50 !important;
+}
+
+@keyframes snackPulseHint {
+    0%   { transform: scale(1);    filter: drop-shadow(0 0 0 transparent); }
+    30%  { transform: scale(1.12); filter: drop-shadow(0 0 18px rgba(255, 215, 0, 0.95)) brightness(1.15); }
+    65%  { transform: scale(1.08); filter: drop-shadow(0 0 12px rgba(255, 107, 0, 0.8)); }
+    100% { transform: scale(1);    filter: drop-shadow(0 0 0 transparent); }
+}

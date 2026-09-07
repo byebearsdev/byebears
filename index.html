@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$ALTSUMR - Alt Summer Is Here</title>
+    <meta name="description" content="$ALTSUMR — alt summer is here. It's always summer somewhere.">
+
+    <!--
+        Leading-slash paths mark these as public/ assets, so Vite rewrites them
+        for `base` instead of trying to resolve them on disk at build time.
+    -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="apple-touch-icon" href="/images/favicon-180.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!--
+        Critical inline style, deliberately minimal.
+        The page is rendered by src/main.js, so without this the browser would
+        briefly paint a white document before the stylesheet applies.
+    -->
+    <style>
+        html, body { margin: 0; background-color: #0a0a12; }
+    </style>
+</head>
+<body>
+    <!--
+        Intentionally empty.
+
+        Every section, overlay and piece of chrome is rendered by
+        src/main.js and inserted here as direct children of <body>.
+        See src/main.js for the render order and the page structure.
+    -->
+    <noscript>
+        <p style="color:#ffd700;font-family:monospace;padding:2rem;text-align:center">
+            $ALTSUMR needs JavaScript enabled.
+        </p>
+    </noscript>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>

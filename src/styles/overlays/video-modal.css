@@ -1,0 +1,62 @@
+/* ==========================================================================
+   OVERLAY — VIDEO MODAL
+   Fullscreen player for the cabinet demo videos.
+
+   Deliberately does NOT use the native Fullscreen API: doing so re-parents the
+   element into the browser's top layer, which breaks the z-index of the UI bar
+   and makes EXIT unclickable. 100vw/100dvh gives the same result and keeps the
+   controls reachable.
+   ========================================================================== */
+
+.video-modal {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    background: #000;
+    z-index: var(--z-video-modal);
+    display: none;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.video-modal.is-open {
+    display: flex;
+    opacity: 1;
+}
+
+/* Title + exit bar, above the video and always clickable. */
+.video-modal-ui {
+    position: relative;
+    width: 100%;
+    height: 64px;
+    flex-shrink: 0;
+    background: rgba(0, 0, 0, 0.85);
+    border-bottom: 3px solid var(--color-orange);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    z-index: 10002;
+    pointer-events: all;
+}
+
+.video-modal-title {
+    font-family: var(--font-arcade);
+    font-size: clamp(0.6rem, 1.5vw, 1rem);
+    color: var(--color-gold);
+    text-shadow: 2px 2px 0 #000, 0 0 10px rgba(255, 215, 0, 0.5);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.video-modal video {
+    flex: 1 1 0;
+    width: 100%;
+    min-height: 0;
+    object-fit: contain;
+    display: block;
+    z-index: 1;
+}

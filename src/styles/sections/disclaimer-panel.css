@@ -1,0 +1,155 @@
+/* ==========================================================================
+   SECTION — DISCLAIMER PANEL  (page footer)
+   Victory signage, closing out the hunt the lair opened at the start of the
+   site. Word-by-word reveal, lit in sequence once scrolled into view.
+   ========================================================================== */
+
+.disclaimer-panel {
+    position: relative;
+    width: 100%;
+    /* Capped the same as every other section (see .snack-table) so the
+       footer reads as the same width as the rest of the page instead of
+       being the one part that stretches edge-to-edge on a wide screen. */
+    max-width: 1280px;
+    margin: 0 auto;
+    background: #000;
+    padding: 70px 20px 50px;
+    text-align: center;
+    overflow: hidden;
+}
+
+/* ---------- Background video (footer.mp4) ---------- */
+.disclaimer-video {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.disclaimer-video video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Solid dark layer between the video and the text — the footage is a bright
+   sunset (lots of sky/sun/water), so the text needs real coverage here
+   rather than relying on text-shadow alone. */
+.disclaimer-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: rgba(6, 8, 10, 0.65);
+}
+
+/* Runway centerline markings along the top edge. */
+.disclaimer-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    z-index: 2;
+    background: repeating-linear-gradient(
+        90deg,
+        rgba(255, 215, 0, 0.5) 0px, rgba(255, 215, 0, 0.5) 28px,
+        transparent 28px, transparent 52px
+    );
+}
+
+.disclaimer-eyebrow {
+    position: relative;
+    z-index: 2;
+    font-family: var(--font-signage);
+    font-size: clamp(0.9rem, 2.2vw, 1.3rem);
+    letter-spacing: 0.08em;
+    color: #f4ecd8;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+    margin-bottom: 34px;
+}
+
+.disclaimer-eyebrow-sep {
+    color: var(--color-gold);
+    margin: 0 0.2em;
+}
+
+.disclaimer-lines {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.disclaimer-line {
+    font-family: var(--font-board);
+    font-weight: 700;
+    font-size: clamp(0.55rem, 1.3vw, 0.8rem);
+    color: #d8cdbb;
+    letter-spacing: 0.08em;
+    line-height: 1.8;
+}
+
+.disclaimer-line--gold {
+    color: var(--color-gold-soft);
+}
+
+.disclaimer-highscore {
+    font-family: var(--font-signage);
+    font-size: clamp(1rem, 2.6vw, 1.6rem);
+    letter-spacing: 0.05em;
+    color: var(--color-gold);
+    margin-top: 18px;
+}
+
+/* ---------- Dark contrast shadow, always on (independent of the sand scrim) ---------- */
+.disclaimer-line .neon-word,
+.disclaimer-highscore .neon-word {
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.65);
+}
+
+/* ---------- Word-by-word reveal glow, tinted per line ---------- */
+.disclaimer-line .neon-word.is-lit {
+    text-shadow:
+        0 1px 4px rgba(0, 0, 0, 0.65),
+        0 0 7px  rgba(255, 236, 200, 0.5),
+        0 0 20px rgba(255, 200, 120, 0.25);
+}
+
+.disclaimer-line--gold .neon-word.is-lit {
+    text-shadow:
+        0 1px 4px rgba(0, 0, 0, 0.65),
+        0 0 7px  rgba(255, 215, 0, 0.6),
+        0 0 20px rgba(255, 215, 0, 0.4),
+        0 0 40px rgba(255, 215, 0, 0.2);
+}
+
+.disclaimer-highscore .neon-word.is-lit {
+    text-shadow:
+        0 1px 4px rgba(0, 0, 0, 0.65),
+        0 0 10px rgba(255, 215, 0, 0.7),
+        0 0 30px rgba(255, 160, 40, 0.5),
+        0 0 55px rgba(255, 107, 0, 0.3);
+}
+
+/* ---------- Boarding-pass barcode, echoing the enter screen ---------- */
+.disclaimer-barcode {
+    position: relative;
+    z-index: 2;
+    width: min(220px, 60vw);
+    height: 26px;
+    margin: 40px auto 0;
+    background: repeating-linear-gradient(
+        90deg,
+        rgba(244, 236, 216, 0.35) 0px, rgba(244, 236, 216, 0.35) 2px,
+        transparent 2px, transparent 3px,
+        rgba(244, 236, 216, 0.35) 3px, rgba(244, 236, 216, 0.35) 4px,
+        transparent 4px, transparent 7px,
+        rgba(244, 236, 216, 0.35) 7px, rgba(244, 236, 216, 0.35) 8px,
+        transparent 8px, transparent 9px
+    );
+}

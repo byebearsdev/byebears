@@ -1,0 +1,20 @@
+{
+  "name": "itsaltseason",
+  "version": "1.0.0",
+  "description": "$ALTSZN — 8-bit arcade landing page",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "audit:refs": "node scripts/audit-refs.mjs",
+    "audit:render": "node scripts/audit-render.mjs",
+    "smoke": "node scripts/smoke.mjs"
+  },
+  "devDependencies": {
+    "netlify-cli": "^26.2.0",
+    "playwright-core": "^1.62.1",
+    "vite": "^6.0.0"
+  }
+}
