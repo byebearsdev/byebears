@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+    plugins: [],
+
     /*
      * Relative base so the built site works from any path (root domain, a
      * sub-folder, or opened straight from disk). This is what lets every asset
