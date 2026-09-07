@@ -1,4 +1,4 @@
-# $ALTSZN — itsaltseason.com
+# BYEBEARS
 
 An 8-bit arcade landing page. Vanilla JS + CSS, bundled with Vite. No UI framework.
 
